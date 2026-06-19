@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📚 期末复习资料</title>
+    <!-- 使用 PDF.js CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <style>
+        :root {
+            --bg: #f5f1eb;
+            --sidebar-bg: #ffffff;
+            --sidebar-width: 280px;
+            --primary: #4a6fa5;
+            --primary-light: #e8eef6;
+            --primary-dark: #345080;
+            --text: #2c3e50;
+            --text-secondary: #5a6c7d;
+            --border: #e2dcd5;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+            --shadow-md: 0 4px 16px rgba(0,0,0,0.08);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .app-container {
+            display: flex;
+            height: 100vh;
+        }
+
+        /* ========== 侧边栏 ========== */
+        .sidebar {
+            width: var(--sidebar-width);
+            min-width: var(--sidebar-width);
+            background: var(--sidebar-bg);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            z-index: 100;
+            box-shadow: var(--shadow-sm);
+            transition: transform 0.25s;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
+        }
+        .sidebar-header .logo {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .sidebar-header .subtitle {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-top: 4px;
+            margin-left: 36px;
+        }
+
+        .file-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 12px 10px;
+        }
+        .file-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: 0.2s;
+            margin-bottom: 4px;
+            font-size: 0.9rem;
+        }
+        .file-item:hover {
+            background: var(--primary-light);
+        }
+        .file-item.active {
+            background: var(--primary-light);
+            border-left: 3px solid var(--primary);
+            font-weight: 600;
+        }
+        .file-icon {
+            width: 32px;
+            height: 32px;
+            background: #fde8e8;
+            color: #c53030;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        .sidebar-footer {
+            padding: 12px 16px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 8px 14px;
+            border-radius: 6px;
+            border: 1.5px solid var(--border);
+            background: white;
+            cursor: pointer;
+            transition: 0.2s;
+            font-size: 0.82rem;
+        }
+        .btn:hover {
+            background: var(--primary-light);
+            border-color: var(--primary);
+        }
+
+        /* ========== 主内容区 ========== */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+        }
+
+        .toolbar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 16px;
+            background: white;
+            border-bottom: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
+        }
+        .toolbar .file-title {
+            font-weight: 600;
+            flex: 1;
+            min-width: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .btn-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: 1.5px solid var(--border);
+            background: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .btn-icon:hover {
+            background: var(--primary-light);
+        }
+        .btn-menu {
+            display: none;
+        }
+
+        /* PDF 渲染区域 */
+        .pdf-container {
+            flex: 1;
+            overflow: auto;
+            background: #525659;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            gap: 10px;
+        }
+        .pdf-page {
+            background: white;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            margin-bottom: 10px;
+            position: relative;
+        }
+        .pdf-page canvas {
+            display: block;
+        }
+
+        /* 翻页控制 */
+        .page-controls {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            padding: 8px;
+            background: rgba(255,255,255,0.9);
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+        .page-controls span {
+            font-size: 0.9rem;
+            min-width: 80px;
+            text-align: center;
+        }
+
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: var(--text-secondary);
+            gap: 10px;
+        }
+
+        /* 移动端适配 */
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                left: -280px;
+                top: 0;
+                height: 100%;
+                transition: left 0.3s;
+                box-shadow: var(--shadow-md);
+            }
+            .sidebar.open { left: 0; }
+            .btn-menu { display: flex; }
+            .toolbar { padding: 8px 10px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- 侧边栏 -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">📚 复习资料</div>
+                <div class="subtitle">期末加油 💪</div>
+            </div>
+            <nav class="file-list" id="fileList"></nav>
+            <div class="sidebar-footer">
+                <button class="btn" onclick="downloadCurrent()">⬇️ 下载当前文件</button>
+                <button class="btn" onclick="openInNewTab()">🔗 新窗口打开</button>
+            </div>
+        </aside>
+
+        <!-- 主区域 -->
+        <main class="main-content">
+            <div class="toolbar">
+                <button class="btn-icon btn-menu" onclick="toggleSidebar()">☰</button>
+                <span class="file-title" id="fileTitle">请选择一份资料</span>
+                <button class="btn-icon" onclick="zoomOut()">➖</button>
+                <button class="btn-icon" onclick="zoomIn()">➕</button>
+            </div>
+            <div class="pdf-container" id="pdfContainer">
+                <div class="empty-state" id="emptyState">
+                    <span style="font-size:3rem;">📖</span>
+                    <span>从左侧选择一份复习资料</span>
+                    <span style="font-size:0.8rem; opacity:0.7;">支持 PDF 在线渲染</span>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // ==================== 你的文件列表（修改这里） ====================
+        const pdfFiles = [
+            { name: "离散数学", path: "pdfs/1.pdf" },
+            { name: "英语期末重点", path: "pdfs/english.pdf" },
+            { name: "数据结构考点汇总", path: "pdfs/datastructure.pdf" },
+            // 继续添加...
+        ];
+
+        // ==================== 全局变量 ====================
+        let currentFileIndex = -1;
+        let pdfDoc = null;
+        let currentPage = 1;
+        let currentScale = 1.2;  // 初始缩放比例
+
+        // 设置 PDF.js worker
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+        // ==================== UI 元素 ====================
+        const fileListEl = document.getElementById('fileList');
+        const pdfContainer = document.getElementById('pdfContainer');
+        const fileTitle = document.getElementById('fileTitle');
+        const emptyState = document.getElementById('emptyState');
+        const sidebar = document.getElementById('sidebar');
+
+        // ==================== 生成文件列表 ====================
+        function renderFileList() {
+            fileListEl.innerHTML = '';
+            pdfFiles.forEach((file, index) => {
+                const item = document.createElement('div');
+                item.className = 'file-item';
+                item.innerHTML = `
+                    <div class="file-icon">PDF</div>
+                    <span>${file.name}</span>
+                `;
+                item.addEventListener('click', () => loadPDF(index));
+                fileListEl.appendChild(item);
+            });
+        }
+
+        // ==================== 加载 PDF ====================
+        async function loadPDF(index) {
+            if (index === currentFileIndex && pdfDoc) return; // 相同文件不重复加载
+
+            currentFileIndex = index;
+            const file = pdfFiles[index];
+            fileTitle.textContent = file.name;
+            document.title = `📖 ${file.name}`;
+
+            // 更新侧边栏高亮
+            document.querySelectorAll('.file-item').forEach((el, i) => {
+                el.classList.toggle('active', i === index);
+            });
+
+            // 清空旧内容
+            pdfContainer.innerHTML = '';
+            emptyState.style.display = 'none';
+
+            // 显示加载提示
+            const loadingMsg = document.createElement('div');
+            loadingMsg.textContent = '⏳ 正在加载 PDF...';
+            loadingMsg.style.color = '#ccc';
+            pdfContainer.appendChild(loadingMsg);
+
+            try {
+                // 使用 PDF.js 加载
+                const loadingTask = pdfjsLib.getDocument(file.path);
+                pdfDoc = await loadingTask.promise;
+
+                // 移除加载提示，添加翻页控件
+                pdfContainer.innerHTML = '';
+                renderAllPages();
+            } catch (error) {
+                console.error('PDF 加载失败:', error);
+                pdfContainer.innerHTML = `
+                    <div class="empty-state">
+                        <span style="font-size:2rem;">❌</span>
+                        <span>文件加载失败</span>
+                        <span style="font-size:0.8rem;">请检查文件路径或网络</span>
+                    </div>`;
+            }
+        }
+
+        // ==================== 渲染所有页面 ====================
+        async function renderAllPages() {
+            if (!pdfDoc) return;
+
+            // 添加翻页控件
+            const controls = document.createElement('div');
+            controls.className = 'page-controls';
+            controls.innerHTML = `
+                <button class="btn" id="prevPage">◀ 上一页</button>
+                <span id="pageInfo">第 1 / ${pdfDoc.numPages} 页</span>
+                <button class="btn" id="nextPage">下一页 ▶</button>
+            `;
+            pdfContainer.appendChild(controls);
+
+            // 创建页面容器
+            const pagesDiv = document.createElement('div');
+            pagesDiv.id = 'pagesWrapper';
+            pdfContainer.appendChild(pagesDiv);
+
+            // 渲染当前页（初始第1页）
+            await renderPage(currentPage, pagesDiv);
+
+            // 绑定翻页事件
+            document.getElementById('prevPage').addEventListener('click', () => {
+                if (currentPage > 1) {
+                    currentPage--;
+                    rerenderCurrentPage();
+                }
+            });
+            document.getElementById('nextPage').addEventListener('click', () => {
+                if (currentPage < pdfDoc.numPages) {
+                    currentPage++;
+                    rerenderCurrentPage();
+                }
+            });
+
+            // 键盘翻页
+            document.addEventListener('keydown', handleKeyboard);
+        }
+
+        async function renderPage(pageNum, container) {
+            const page = await pdfDoc.getPage(pageNum);
+            const viewport = page.getViewport({ scale: currentScale });
+
+            const canvas = document.createElement('canvas');
+            canvas.className = 'pdf-page';
+            const context = canvas.getContext('2d');
+            canvas.height = viewport.height;
+            canvas.width = viewport.width;
+
+            await page.render({
+                canvasContext: context,
+                viewport: viewport
+            }).promise;
+
+            container.innerHTML = '';  // 清除上一页
+            container.appendChild(canvas);
+
+            // 更新页码显示
+            const pageInfo = document.getElementById('pageInfo');
+            if (pageInfo) {
+                pageInfo.textContent = `第 ${pageNum} / ${pdfDoc.numPages} 页`;
+            }
+        }
+
+        function rerenderCurrentPage() {
+            const wrapper = document.getElementById('pagesWrapper');
+            if (wrapper) {
+                renderPage(currentPage, wrapper);
+            }
+        }
+
+        // ==================== 缩放功能 ====================
+        function zoomIn() {
+            currentScale = Math.min(currentScale + 0.2, 3.0);
+            rerenderCurrentPage();
+        }
+        function zoomOut() {
+            currentScale = Math.max(currentScale - 0.2, 0.5);
+            rerenderCurrentPage();
+        }
+
+        // ==================== 键盘控制 ====================
+        function handleKeyboard(e) {
+            if (!pdfDoc) return;
+            if (e.key === 'ArrowRight' || e.key === 'ArrowDown') {
+                e.preventDefault();
+                if (currentPage < pdfDoc.numPages) {
+                    currentPage++;
+                    rerenderCurrentPage();
+                }
+            } else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') {
+                e.preventDefault();
+                if (currentPage > 1) {
+                    currentPage--;
+                    rerenderCurrentPage();
+                }
+            }
+        }
+
+        // ==================== 辅助功能 ====================
+        function downloadCurrent() {
+            if (currentFileIndex >= 0) {
+                const a = document.createElement('a');
+                a.href = pdfFiles[currentFileIndex].path;
+                a.download = pdfFiles[currentFileIndex].path.split('/').pop();
+                a.click();
+            }
+        }
+
+        function openInNewTab() {
+            if (currentFileIndex >= 0) {
+                window.open(pdfFiles[currentFileIndex].path, '_blank');
+            }
+        }
+
+        function toggleSidebar() {
+            sidebar.classList.toggle('open');
+        }
+
+        // 点击侧边栏外部关闭（移动端）
+        document.addEventListener('click', (e) => {
+            if (window.innerWidth <= 768 && !sidebar.contains(e.target) && sidebar.classList.contains('open')) {
+                sidebar.classList.remove('open');
+            }
+        });
+
+        // ==================== 初始化 ====================
+        renderFileList();
+        if (pdfFiles.length > 0) {
+            loadPDF(0); // 自动加载第一个文件
+        }
+
+        // 清理键盘监听（避免重复绑定）
+        window.addEventListener('beforeunload', () => {
+            document.removeEventListener('keydown', handleKeyboard);
+        });
+    </script>
+</body>
+</html>
