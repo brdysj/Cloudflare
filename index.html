@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📚 期末复习资料</title>
+    <style>
+        :root {
+            --bg: #f5f1eb;
+            --sidebar-bg: #ffffff;
+            --sidebar-width: 280px;
+            --primary: #4a6fa5;
+            --primary-light: #e8eef6;
+            --primary-dark: #345080;
+            --text: #2c3e50;
+            --text-secondary: #5a6c7d;
+            --border: #e2dcd5;
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+            --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.08), 0 2px 6px rgba(0, 0, 0, 0.04);
+            --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.1), 0 4px 12px rgba(0, 0, 0, 0.05);
+            --radius-sm: 8px;
+            --radius: 12px;
+            --radius-lg: 16px;
+            --transition: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            --font-serif: 'Georgia', 'Noto Serif SC', 'STSong', 'SimSun', 'Songti SC', serif;
+            --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB',
+                'Microsoft YaHei', 'Helvetica Neue', sans-serif;
+        }
+
+        /* 暗色模式 */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg: #1a1a1f;
+                --sidebar-bg: #222228;
+                --primary: #7ba4db;
+                --primary-light: #252b35;
+                --primary-dark: #8fb8f0;
+                --text: #e0dcd5;
+                --text-secondary: #b0a99e;
+                --border: #333338;
+                --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
+                --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.35);
+                --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.45);
+            }
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            height: 100%;
+            font-family: var(--font-sans);
+            background: var(--bg);
+            color: var(--text);
+            overflow: hidden;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* ========== 整体布局 ========== */
+        .app-container {
+            display: flex;
+            height: 100vh;
+            width: 100%;
+            position: relative;
+        }
+
+        /* ========== 侧边栏 ========== */
+        .sidebar {
+            width: var(--sidebar-width);
+            min-width: var(--sidebar-width);
+            height: 100%;
+            background: var(--sidebar-bg);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            z-index: 100;
+            transition: transform var(--transition);
+            box-shadow: var(--shadow-sm);
+            position: relative;
+        }
+
+        .sidebar-header {
+            padding: 20px 20px 16px;
+            border-bottom: 1px solid var(--border);
+            flex-shrink: 0;
+        }
+
+        .sidebar-header .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--primary);
+            letter-spacing: -0.01em;
+        }
+
+        .sidebar-header .logo .icon {
+            width: 38px;
+            height: 38px;
+            background: var(--primary-light);
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            flex-shrink: 0;
+        }
+
+        .sidebar-header .subtitle {
+            font-size: 0.78rem;
+            color: var(--text-secondary);
+            margin-top: 4px;
+            margin-left: 48px;
+            letter-spacing: 0.02em;
+        }
+
+        .sidebar-file-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 12px 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            scroll-behavior: smooth;
+        }
+
+        .sidebar-file-list::-webkit-scrollbar {
+            width: 4px;
+        }
+        .sidebar-file-list::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .sidebar-file-list::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 10px;
+        }
+        .sidebar-file-list::-webkit-scrollbar-thumb:hover {
+            background: #c5bfb5;
+        }
+
+        /* 文件列表项 */
+        .file-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 11px 14px;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all var(--transition);
+            text-decoration: none;
+            color: var(--text);
+            font-size: 0.9rem;
+            font-weight: 500;
+            position: relative;
+            user-select: none;
+            border: 1.5px solid transparent;
+            letter-spacing: 0.01em;
+        }
+
+        .file-item:hover {
+            background: var(--primary-light);
+            border-color: transparent;
+            transform: translateX(2px);
+        }
+
+        .file-item:active {
+            transform: scale(0.98);
+            transition: transform 0.1s ease;
+        }
+
+        .file-item.active {
+            background: var(--primary-light);
+            border-color: var(--primary);
+            color: var(--primary-dark);
+            font-weight: 600;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .file-item .file-icon {
+            flex-shrink: 0;
+            width: 34px;
+            height: 34px;
+            border-radius: 7px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            transition: all var(--transition);
+        }
+
+        .file-item .file-icon.type-pdf {
+            background: #fde8e8;
+            color: #c53030;
+        }
+        .file-item .file-icon.type-other {
+            background: #e8f0fd;
+            color: #3b6cb4;
+        }
+        .file-item.active .file-icon.type-pdf {
+            background: #fcd5d5;
+            color: #a02020;
+        }
+        .file-item.active .file-icon.type-other {
+            background: #d4e2fa;
+            color: #2c5282;
+        }
+
+        .file-item .file-info {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+        .file-item .file-name {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            font-size: 0.88rem;
+        }
+        .file-item .file-meta {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .file-item .active-indicator {
+            width: 3px;
+            height: 20px;
+            background: var(--primary);
+            border-radius: 3px;
+            opacity: 0;
+            transition: opacity var(--transition);
+            position: absolute;
+            left: -1px;
+        }
+        .file-item.active .active-indicator {
+            opacity: 1;
+        }
+
+        /* 侧边栏底部 */
+        .sidebar-footer {
+            padding: 12px 16px;
+            border-top: 1px solid var(--border);
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .sidebar-footer .btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 9px 14px;
+            border-radius: var(--radius-sm);
+            font-size: 0.82rem;
+            cursor: pointer;
+            border: 1.5px solid var(--border);
+            background: var(--sidebar-bg);
+            color: var(--text-secondary);
+            transition: all var(--transition);
+            font-family: inherit;
+            letter-spacing: 0.02em;
+            white-space: nowrap;
+        }
+        .sidebar-footer .btn:hover {
+            background: var(--primary-light);
+            color: var(--primary-dark);
+            border-color: var(--primary);
+        }
+        .sidebar-footer .btn:active {
+            transform: scale(0.97);
+            transition: transform 0.1s ease;
+        }
+
+        /* ========== 主内容区 ========== */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            position: relative;
+            background: var(--bg);
+            min-width: 0;
+        }
+
+        /* 顶部工具栏 */
+        .toolbar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 16px;
+            background: var(--sidebar-bg);
+            border-bottom: 1px solid var(--border);
+            flex-shrink: 0;
+            z-index: 50;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .toolbar .current-file-title {
+            font-weight: 600;
+            font-size: 0.95rem;
+            flex: 1;
+            min-width: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            letter-spacing: 0.01em;
+        }
+
+        .toolbar .btn-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 1.5px solid var(--border);
+            background: var(--sidebar-bg);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            color: var(--text-secondary);
+            transition: all var(--transition);
+            flex-shrink: 0;
+        }
+        .toolbar .btn-icon:hover {
+            background: var(--primary-light);
+            color: var(--primary-dark);
+            border-color: var(--primary);
+        }
+        .toolbar .btn-icon:active {
+            transform: scale(0.9);
+            transition: transform 0.1s ease;
+        }
+
+        /* 汉堡菜单按钮（移动端） */
+        .btn-menu {
+            display: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 1.5px solid var(--border);
+            background: var(--sidebar-bg);
+            cursor: pointer;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            transition: all var(--transition);
+            flex-shrink: 0;
+        }
+        .btn-menu:hover {
+            background: var(--primary-light);
+            color: var(--primary-dark);
+        }
+
+        /* PDF 查看区域 */
+        .pdf-viewer-wrapper {
+            flex: 1;
+            position: relative;
+            background: #e8e5df;
+            overflow: hidden;
+        }
+        @media (prefers-color-scheme: dark) {
+            .pdf-viewer-wrapper {
+                background: #1e1e22;
+            }
+        }
+
+        .pdf-viewer-wrapper iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            display: block;
+        }
+
+        /* 空状态 */
+        .empty-state {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            pointer-events: none;
+            color: var(--text-secondary);
+            text-align: center;
+            padding: 20px;
+        }
+        .empty-state .empty-icon {
+            font-size: 4rem;
+            opacity: 0.5;
+        }
+        .empty-state .empty-text {
+            font-size: 1rem;
+            font-weight: 500;
+            letter-spacing: 0.02em;
+        }
+        .empty-state .empty-hint {
+            font-size: 0.8rem;
+            opacity: 0.7;
+        }
+
+        /* 加载指示器 */
+        .loading-bar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 3px;
+            background: var(--primary);
+            border-radius: 0 2px 2px 0;
+            transition: width 0.4s ease;
+            z-index: 10;
+            width: 0%;
+            opacity: 0;
+        }
+        .loading-bar.visible {
+            opacity: 1;
+            animation: loadingPulse 1.8s ease-in-out infinite;
+        }
+        @keyframes loadingPulse {
+            0% {
+                width: 0%;
+            }
+            30% {
+                width: 40%;
+            }
+            60% {
+                width: 75%;
+            }
+            90% {
+                width: 92%;
+            }
+            100% {
+                width: 98%;
+            }
+        }
+
+        /* ========== 移动端遮罩 ========== */
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 99;
+            opacity: 0;
+            transition: opacity var(--transition);
+            pointer-events: none;
+        }
+        .sidebar-overlay.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* ========== 响应式设计 ========== */
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                left: 0;
+                top: 0;
+                height: 100%;
+                transform: translateX(-100%);
+                box-shadow: var(--shadow-lg);
+                z-index: 100;
+                width: 275px;
+                min-width: 275px;
+            }
+            .sidebar.open {
+                transform: translateX(0);
+            }
+            .sidebar-overlay {
+                display: block;
+            }
+            .btn-menu {
+                display: flex;
+            }
+            .toolbar {
+                padding: 8px 10px;
+                gap: 6px;
+            }
+            .toolbar .current-file-title {
+                font-size: 0.85rem;
+            }
+            .toolbar .btn-icon {
+                width: 32px;
+                height: 32px;
+                font-size: 0.9rem;
+            }
+            .sidebar-header {
+                padding: 16px 16px 12px;
+            }
+            .sidebar-header .logo {
+                font-size: 1.1rem;
+            }
+        }
+
+        @media (max-width: 400px) {
+            .sidebar {
+                width: 85vw;
+                min-width: 85vw;
+            }
+            .toolbar .btn-icon.hide-on-mobile {
+                display: none;
+            }
+        }
+
+        /* ========== 打印样式 ========== */
+        @media print {
+            .sidebar,
+            .toolbar,
+            .sidebar-overlay,
+            .loading-bar {
+                display: none !important;
+            }
+            .main-content {
+                position: static;
+            }
+            .pdf-viewer-wrapper {
+                position: static;
+                height: auto;
+            }
+            .pdf-viewer-wrapper iframe {
+                height: 100vh;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <!-- 侧边栏遮罩（移动端） -->
+        <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+        <!-- 侧边栏 -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <span class="icon">📚</span>
+                    <span>复习资料</span>
+                </div>
+                <p class="subtitle">期末加油 💪</p>
+            </div>
+            <nav class="sidebar-file-list" id="fileList">
+                <!-- 动态生成文件列表 -->
+            </nav>
+            <div class="sidebar-footer">
+                <button class="btn" onclick="openInNewTab()" title="在新标签页中打开当前PDF">
+                    🔗 新窗口打开
+                </button>
+                <button class="btn" onclick="downloadCurrentPDF()" title="下载当前PDF文件">
+                    ⬇️ 下载当前文件
+                </button>
+            </div>
+        </aside>
+
+        <!-- 主内容区 -->
+        <main class="main-content">
+            <!-- 顶部工具栏 -->
+            <div class="toolbar">
+                <button class="btn-menu" id="btnMenu" onclick="toggleSidebar()" aria-label="打开文件列表">
+                    ☰
+                </button>
+                <span class="current-file-title" id="currentFileTitle">请选择一份资料</span>
+                <button class="btn-icon hide-on-mobile" onclick="zoomIn()" title="放大" aria-label="放大">🔍</button>
+                <button class="btn-icon hide-on-mobile" onclick="zoomOut()" title="缩小" aria-label="缩小">🔎</button>
+                <button class="btn-icon" onclick="openInNewTab()" title="新窗口打开" aria-label="新窗口打开">↗️</button>
+            </div>
+
+            <!-- PDF查看区域 -->
+            <div class="pdf-viewer-wrapper" id="pdfViewerWrapper">
+                <div class="loading-bar" id="loadingBar"></div>
+                <div class="empty-state" id="emptyState">
+                    <span class="empty-icon">📖</span>
+                    <span class="empty-text">从左侧选择一份复习资料开始学习</span>
+                    <span class="empty-hint">支持 PDF 文档在线预览</span>
+                </div>
+                <iframe
+                id="pdfIframe"
+                src=""
+                title="PDF查看器"
+                sandbox="allow-scripts allow-same-origin allow-forms allow-popups"
+                loading="lazy"
+                style="display:none;"
+            ></iframe>
+        </div>
+    </main>
+</div>
+
+<script>
+    (function() {
+        // ==================== 📝 配置区：在这里添加你的PDF文件 ====================
+        // 把PDF文件放在和这个HTML文件相同的目录下（或者子目录里），然后修改下面的列表
+        // name: 显示在侧边栏的文件名称
+        // path: PDF文件的相对路径（相对于这个HTML文件）
+        // 示例：如果你的PDF在 "pdfs" 文件夹里，路径就是 "pdfs/你的文件名.pdf"
+        const pdfFiles = [
+            {
+                name: "示例：高等数学复习笔记",
+                path: "pdfs/example-math.pdf"
+            },
+            {
+                name: "示例：英语期末重点",
+                path: "pdfs/example-english.pdf"
+            },
+            {
+                name: "示例：数据结构考点汇总",
+                path: "pdfs/example-datastructure.pdf"
+            },
+            // 👇 在这里添加更多文件，格式如下：
+            // { name: "你的文件名", path: "你的文件路径.pdf" },
+        ];
+
+        // ==================== 状态管理 ====================
+        let currentFileIndex = -1;
+        let isSidebarOpen = false;
+        let currentZoom = 1;
+
+        // ==================== DOM元素 ====================
+        const sidebar = document.getElementById('sidebar');
+        const sidebarOverlay = document.getElementById('sidebarOverlay');
+        const fileListEl = document.getElementById('fileList');
+        const pdfIframe = document.getElementById('pdfIframe');
+        const emptyState = document.getElementById('emptyState');
+        const loadingBar = document.getElementById('loadingBar');
+        const currentFileTitle = document.getElementById('currentFileTitle');
+        const btnMenu = document.getElementById('btnMenu');
+        const pdfViewerWrapper = document.getElementById('pdfViewerWrapper');
+
+        // ==================== 初始化文件列表 ====================
+        function renderFileList() {
+            fileListEl.innerHTML = '';
+
+            if (pdfFiles.length === 0) {
+                fileListEl.innerHTML = `
+                            <div style="padding:20px;text-align:center;color:var(--text-secondary);font-size:0.85rem;">
+                                <p>📭 还没有添加文件</p>
+                                <p style="font-size:0.75rem;margin-top:6px;">请编辑HTML中的pdfFiles配置</p>
+                            </div>`;
+                return;
+            }
+
+            pdfFiles.forEach((file, index) => {
+                const item = document.createElement('div');
+                item.className = 'file-item';
+                item.setAttribute('role', 'button');
+                item.setAttribute('tabindex', '0');
+                item.setAttribute('aria-label', file.name);
+                item.dataset.index = index;
+
+                // 判断文件类型图标
+                const ext = file.path.split('.').pop().toLowerCase();
+                const iconClass = ext === 'pdf' ? 'type-pdf' : 'type-other';
+                const iconLetter = ext === 'pdf' ? 'PDF' : ext.substring(0, 3).toUpperCase();
+
+                item.innerHTML = `
+                            <div class="active-indicator"></div>
+                            <div class="file-icon ${iconClass}">${iconLetter}</div>
+                            <div class="file-info">
+                                <span class="file-name">${escapeHTML(file.name)}</span>
+                                <span class="file-meta">${escapeHTML(file.path)}</span>
+                            </div>
+                        `;
+
+                item.addEventListener('click', () => selectFile(index));
+                item.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        selectFile(index);
+                    }
+                });
+
+                fileListEl.appendChild(item);
+            });
+        }
+
+        function escapeHTML(str) {
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+
+        // ==================== 选择文件 ====================
+        function selectFile(index) {
+            if (index < 0 || index >= pdfFiles.length) return;
+
+            currentFileIndex = index;
+            const file = pdfFiles[index];
+
+            // 更新UI状态
+            updateActiveItem(index);
+            currentFileTitle.textContent = file.name;
+            document.title = `📖 ${file.name} - 期末复习资料`;
+
+            // 隐藏空状态
+            emptyState.style.display = 'none';
+
+            // 显示加载条
+            showLoading();
+
+            // 构建PDF URL
+            const pdfUrl = file.path;
+
+            // 设置iframe源
+            pdfIframe.src = pdfUrl;
+            pdfIframe.style.display = 'block';
+
+            // 更新URL hash（便于分享）
+            const slug = generateSlug(file);
+            if (history.pushState) {
+                history.pushState({ index: index }, '', `#${slug}`);
+            } else {
+                window.location.hash = slug;
+            }
+
+            // 在移动端关闭侧边栏
+            if (window.innerWidth <= 768) {
+                closeSidebar();
+            }
+
+            // 存储最近查看的文件
+            try {
+                localStorage.setItem('lastViewedFileIndex', index);
+            } catch (e) {
+                // localStorage不可用
+            }
+        }
+
+        function generateSlug(file) {
+            // 从文件路径生成URL友好的slug
+            const filename = file.path.split('/').pop().replace(/\.[^/.]+$/, '');
+            // 如果文件名包含中文或特殊字符，使用索引
+            if (/[^\w-]/.test(filename)) {
+                return 'file-' + pdfFiles.indexOf(file);
+            }
+            return encodeURIComponent(filename);
+        }
+
+        function updateActiveItem(index) {
+            const items = fileListEl.querySelectorAll('.file-item');
+            items.forEach((item, i) => {
+                if (i === index) {
+                    item.classList.add('active');
+                    // 滚动到可见区域
+                    item.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                } else {
+                    item.classList.remove('active');
+                }
+            });
+        }
+
+        function showLoading() {
+            loadingBar.classList.add('visible');
+            // 模拟加载完成（iframe加载完成后隐藏）
+            setTimeout(() => {
+                hideLoading();
+            }, 2500);
+        }
+
+        function hideLoading() {
+            loadingBar.classList.remove('visible');
+        }
+
+        // iframe加载完成时隐藏loading
+        pdfIframe.addEventListener('load', () => {
+            hideLoading();
+            // 确保iframe可见
+            if (pdfIframe.src && pdfIframe.src !== 'about:blank') {
+                pdfIframe.style.display = 'block';
+                emptyState.style.display = 'none';
+            }
+        });
+
+        // iframe加载失败处理
+        pdfIframe.addEventListener('error', () => {
+            hideLoading();
+            emptyState.style.display = 'flex';
+            emptyState.querySelector('.empty-text').textContent = '⚠️ 文件加载失败';
+            emptyState.querySelector('.empty-hint').textContent =
+                '请检查文件路径是否正确，文件是否存在';
+            pdfIframe.style.display = 'none';
+        });
+
+        // ==================== 侧边栏控制 ====================
+        function toggleSidebar() {
+            if (isSidebarOpen) {
+                closeSidebar();
+            } else {
+                openSidebar();
+            }
+        }
+
+        function openSidebar() {
+            sidebar.classList.add('open');
+            sidebarOverlay.classList.add('visible');
+            isSidebarOpen = true;
+            btnMenu.textContent = '✕';
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeSidebar() {
+            sidebar.classList.remove('open');
+            sidebarOverlay.classList.remove('visible');
+            isSidebarOpen = false;
+            btnMenu.textContent = '☰';
+            document.body.style.overflow = '';
+        }
+
+        // 点击遮罩关闭
+        sidebarOverlay.addEventListener('click', closeSidebar);
+
+        // ESC关闭侧边栏
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && isSidebarOpen) {
+                closeSidebar();
+            }
+        });
+
+        // ==================== 工具栏功能 ====================
+        function openInNewTab() {
+            if (currentFileIndex >= 0 && currentFileIndex < pdfFiles.length) {
+                const url = pdfFiles[currentFileIndex].path;
+                window.open(url, '_blank', 'noopener,noreferrer');
+            }
+        }
+
+        function downloadCurrentPDF() {
+            if (currentFileIndex >= 0 && currentFileIndex < pdfFiles.length) {
+                const file = pdfFiles[currentFileIndex];
+                const link = document.createElement('a');
+                link.href = file.path;
+                link.download = file.path.split('/').pop();
+                link.target = '_blank';
+                link.rel = 'noopener noreferrer';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            } else {
+                alert('请先选择一个PDF文件');
+            }
+        }
+
+        function zoomIn() {
+            currentZoom = Math.min(currentZoom + 0.1, 2.5);
+            applyZoom();
+        }
+
+        function zoomOut() {
+            currentZoom = Math.max(currentZoom - 0.1, 0.5);
+            applyZoom();
+        }
+
+        function applyZoom() {
+            pdfIframe.style.transform = `scale(${currentZoom})`;
+            pdfIframe.style.transformOrigin = 'top center';
+            pdfIframe.style.transition = 'transform 0.3s ease';
+        }
+
+        // ==================== 键盘快捷键 ====================
+        document.addEventListener('keydown', (e) => {
+            // 如果焦点在输入框内，不处理快捷键
+            if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target
+                .isContentEditable) {
+                return;
+            }
+
+            const mod = e.ctrlKey || e.metaKey;
+
+            if (mod && e.key === 'o') {
+                // Ctrl+O: 新窗口打开
+                e.preventDefault();
+                openInNewTab();
+            } else if (mod && e.key === 's') {
+                // Ctrl+S: 下载
+                e.preventDefault();
+                downloadCurrentPDF();
+            } else if (e.key === 'ArrowDown' && mod === false) {
+                // 下箭头：下一个文件
+                e.preventDefault();
+                navigateFile(1);
+            } else if (e.key === 'ArrowUp' && mod === false) {
+                // 上箭头：上一个文件
+                e.preventDefault();
+                navigateFile(-1);
+            } else if (e.key === 'f' && mod === false && !isSidebarOpen) {
+                // F键：全屏（需要用户触发）
+                if (document.fullscreenElement) {
+                    document.exitFullscreen();
+                } else {
+                    pdfViewerWrapper.requestFullscreen().catch(() => {});
+                }
+            }
+        });
+
+        function navigateFile(direction) {
+            if (pdfFiles.length === 0) return;
+            let newIndex = currentFileIndex + direction;
+            if (newIndex < 0) newIndex = pdfFiles.length - 1;
+            if (newIndex >= pdfFiles.length) newIndex = 0;
+            selectFile(newIndex);
+        }
+
+        // ==================== URL Hash 路由 ====================
+        function handleHashChange() {
+            const hash = window.location.hash.replace('#', '');
+            if (!hash) return;
+
+            // 尝试匹配slug
+            let matchedIndex = -1;
+            pdfFiles.forEach((file, index) => {
+                const slug = generateSlug(file);
+                if (slug === hash || slug === decodeURIComponent(hash)) {
+                    matchedIndex = index;
+                }
+                // 也尝试匹配"file-索引"格式
+                if (hash === 'file-' + index) {
+                    matchedIndex = index;
+                }
+            });
+
+            if (matchedIndex >= 0 && matchedIndex !== currentFileIndex) {
+                selectFile(matchedIndex);
+            }
+        }
+
+        window.addEventListener('hashchange', handleHashChange);
+
+        // ==================== 窗口大小变化处理 ====================
+        let resizeTimeout;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => {
+                if (window.innerWidth > 768 && isSidebarOpen) {
+                    // 从移动端切换到桌面端时自动关闭侧边栏（桌面端侧边栏始终可见）
+                    closeSidebar();
+                }
+            }, 200);
+        });
+
+        // ==================== 初始化 ====================
+        function init() {
+            renderFileList();
+
+            // 检查URL hash
+            const hash = window.location.hash.replace('#', '');
+            let initialIndex = -1;
+
+            if (hash) {
+                pdfFiles.forEach((file, index) => {
+                    const slug = generateSlug(file);
+                    if (slug === hash || slug === decodeURIComponent(hash) || hash ===
+                        'file-' + index) {
+                        initialIndex = index;
+                    }
+                });
+            }
+
+            // 如果没有hash匹配，尝试从localStorage恢复
+            if (initialIndex < 0) {
+                try {
+                    const saved = localStorage.getItem('lastViewedFileIndex');
+                    if (saved !== null && parseInt(saved) < pdfFiles.length) {
+                        initialIndex = parseInt(saved);
+                    }
+                } catch (e) {}
+            }
+
+            // 如果还没有，默认选择第一个文件
+            if (initialIndex < 0 && pdfFiles.length > 0) {
+                initialIndex = 0;
+            }
+
+            // 选择初始文件
+            if (initialIndex >= 0 && initialIndex < pdfFiles.length) {
+                selectFile(initialIndex);
+            } else if (pdfFiles.length === 0) {
+                // 没有文件，显示空状态
+                emptyState.style.display = 'flex';
+                currentFileTitle.textContent = '请配置PDF文件列表';
+            }
+
+            // 处理浏览器后退/前进
+            window.addEventListener('popstate', (e) => {
+                if (e.state && e.state.index !== undefined) {
+                    if (e.state.index !== currentFileIndex) {
+                        selectFile(e.state.index);
+                    }
+                } else {
+                    handleHashChange();
+                }
+            });
+
+            console.log('📚 期末复习资料查看器已就绪');
+            console.log('   - 共加载 ' + pdfFiles.length + ' 个文件');
+            console.log('   - 点击侧边栏切换文件');
+            console.log('   - 按 ↑↓ 键切换文件');
+            console.log('   - 按 F 键全屏查看');
+            console.log('   - 按 Ctrl+O 新窗口打开');
+            console.log('   - 按 Ctrl+S 下载当前文件');
+            console.log('💡 提示：请将你的PDF文件放在与HTML相同的目录下，然后修改pdfFiles配置');
+        }
+
+        // ==================== 暴露全局方法 ====================
+        window.toggleSidebar = toggleSidebar;
+        window.closeSidebar = closeSidebar;
+        window.openInNewTab = openInNewTab;
+        window.downloadCurrentPDF = downloadCurrentPDF;
+        window.zoomIn = zoomIn;
+        window.zoomOut = zoomOut;
+        window.selectFile = selectFile;
+
+        // 启动应用
+        init();
+    })();
+</script>
+</body>
+</html>
